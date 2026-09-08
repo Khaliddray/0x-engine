@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from app.api.routes.health import router as health_router
 from app.api.routes.portfolios import router as portfolio_router
 from app.api.routes.projects import router as project_router
+from app.api.routes.portfolio_sections import router as portfolio_section_router
 
 
 app = FastAPI(
@@ -11,9 +12,11 @@ app = FastAPI(
     version="0.1.0",
 )
 
+
 app.include_router(health_router)
 app.include_router(portfolio_router)
 app.include_router(project_router)
+app.include_router(portfolio_section_router)
 
 
 @app.get("/")
