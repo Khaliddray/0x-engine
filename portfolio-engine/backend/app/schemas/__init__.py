@@ -13,6 +13,11 @@ from app.schemas.portfolio_section import (
     PortfolioSectionResponse,
     PortfolioSectionUpdate,
 )
+from app.schemas.skill import (
+    SkillCreate,
+    SkillResponse,
+    SkillUpdate,
+)
 
 __all__ = [
     "PortfolioCreate",
@@ -24,4 +29,7 @@ __all__ = [
     "PortfolioSectionCreate",
     "PortfolioSectionResponse",
     "PortfolioSectionUpdate",
+    "SkillCreate",
+    "SkillResponse",
+    "SkillUpdate",
 ]
