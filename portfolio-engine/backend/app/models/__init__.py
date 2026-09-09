@@ -3,6 +3,7 @@ from app.models.project import Project
 from app.models.portfolio_section import PortfolioSection
 from app.models.skill import Skill
 from app.models.experience import Experience
+from app.models.education import Education
 
 __all__ = [
     "Portfolio",
@@ -10,4 +11,5 @@ __all__ = [
     "PortfolioSection",
     "Skill",
     "Experience",
+    "Education",
 ]
