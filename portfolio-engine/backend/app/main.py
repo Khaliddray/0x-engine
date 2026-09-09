@@ -8,6 +8,7 @@ from app.api.routes.skills import router as skill_router
 from app.api.routes.experiences import router as experience_router
 from app.api.routes.education import router as education_router
 from app.api.routes.certifications import router as certification_router
+from app.api.routes.social_links import router as social_link_router
 
 
 app = FastAPI(
@@ -25,6 +26,7 @@ app.include_router(skill_router)
 app.include_router(experience_router)
 app.include_router(education_router)
 app.include_router(certification_router)
+app.include_router(social_link_router)
 
 
 @app.get("/")

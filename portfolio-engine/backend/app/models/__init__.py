@@ -5,6 +5,7 @@ from app.models.skill import Skill
 from app.models.experience import Experience
 from app.models.education import Education
 from app.models.certification import Certification
+from app.models.social_link import SocialLink
 
 __all__ = [
     "Portfolio",
@@ -14,4 +15,5 @@ __all__ = [
     "Experience",
     "Education",
     "Certification",
+    "SocialLink",
 ]
