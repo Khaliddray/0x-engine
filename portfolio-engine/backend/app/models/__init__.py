@@ -7,6 +7,8 @@ from app.models.education import Education
 from app.models.certification import Certification
 from app.models.social_link import SocialLink
 from app.models.resume import Resume
+from app.models.project_technology import ProjectTechnology
+
 
 __all__ = [
     "Portfolio",
@@ -18,4 +20,5 @@ __all__ = [
     "Certification",
     "SocialLink",
     "Resume",
+    "ProjectTechnology",
 ]

@@ -5,7 +5,18 @@ from sqlalchemy import engine_from_config, pool
 
 from app.core.config import settings
 from app.db.session import Base
-from app.models import Portfolio, Project, PortfolioSection
+from app.models import (
+    Portfolio,
+    Project,
+    PortfolioSection,
+    Skill,
+    Experience,
+    Education,
+    Certification,
+    SocialLink,
+    Resume,
+    ProjectTechnology,
+)
 
 config = context.config
 
