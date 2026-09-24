@@ -10,6 +10,7 @@ class ProjectBase(BaseModel):
     description: str | None = None
     github_url: str | None = None
     live_url: str | None = None
+    is_featured: bool = False
 
 
 class ProjectCreate(ProjectBase):
@@ -45,6 +46,11 @@ class ProjectUpdate(BaseModel):
     live_url: str | None = Field(
         default=None,
         description="Live project URL.",
+    )
+
+    is_featured: bool | None = Field(
+        default=None,
+        description="Whether the project should be featured.",
     )
 
 

@@ -41,6 +41,7 @@ class ProjectService:
             description=data.description,
             github_url=data.github_url,
             live_url=data.live_url,
+            is_featured=data.is_featured,
         )
 
         return self.repository.create(project)
