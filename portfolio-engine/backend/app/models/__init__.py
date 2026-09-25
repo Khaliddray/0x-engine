@@ -8,6 +8,7 @@ from app.models.certification import Certification
 from app.models.social_link import SocialLink
 from app.models.resume import Resume
 from app.models.project_technology import ProjectTechnology
+from app.models.project_media import ProjectMedia
 
 
 __all__ = [
@@ -21,4 +22,5 @@ __all__ = [
     "SocialLink",
     "Resume",
     "ProjectTechnology",
+    "ProjectMedia",
 ]

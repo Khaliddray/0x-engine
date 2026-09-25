@@ -11,6 +11,7 @@ from app.api.routes.certifications import router as certification_router
 from app.api.routes.social_links import router as social_link_router
 from app.api.routes.resumes import router as resume_router
 from app.api.routes.project_technologies import router as project_technology_router
+from app.api.routes.project_media import router as project_media_router
 
 
 app = FastAPI(
@@ -31,6 +32,7 @@ app.include_router(certification_router)
 app.include_router(social_link_router)
 app.include_router(resume_router)
 app.include_router(project_technology_router)
+app.include_router(project_media_router)
 
 
 @app.get("/")
