@@ -18,6 +18,13 @@ from app.schemas.skill import (
     SkillResponse,
     SkillUpdate,
 )
+from app.schemas.user import (
+    LoginRequest,
+    Token,
+    UserCreate,
+    UserResponse,
+    UserUpdate,
+)
 
 __all__ = [
     "PortfolioCreate",
@@ -32,4 +39,9 @@ __all__ = [
     "SkillCreate",
     "SkillResponse",
     "SkillUpdate",
+    "UserCreate",
+    "UserResponse",
+    "UserUpdate",
+    "Token",
+    "LoginRequest",
 ]

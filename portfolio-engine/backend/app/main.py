@@ -13,6 +13,8 @@ from app.api.routes.resumes import router as resume_router
 from app.api.routes.project_technologies import router as project_technology_router
 from app.api.routes.project_media import router as project_media_router
 from app.api.routes.public_portfolios import router as public_portfolio_router
+from app.api.routes.auth import router as auth_router
+from app.api.routes.users import router as user_router
 
 
 app = FastAPI(
@@ -23,6 +25,8 @@ app = FastAPI(
 
 
 app.include_router(health_router)
+app.include_router(auth_router)
+app.include_router(user_router)
 app.include_router(portfolio_router)
 app.include_router(project_router)
 app.include_router(portfolio_section_router)

@@ -16,6 +16,8 @@ from app.models import (
     SocialLink,
     Resume,
     ProjectTechnology,
+    ProjectMedia,
+    User,
 )
 
 config = context.config

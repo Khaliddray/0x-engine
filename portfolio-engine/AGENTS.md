@@ -257,6 +257,8 @@ The following foundation is already implemented:
 - 404 handling
 - 409 conflict handling
 - Delete operations
+- Authentication with Argon2 and JWT tokens
+- User management and authentication routes (/api/auth, /api/users)
 
 This foundation should be preserved and extended rather than rebuilt.
 
