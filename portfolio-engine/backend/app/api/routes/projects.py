@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.schemas.project import (
     ProjectCreate,
@@ -24,6 +25,7 @@ router = APIRouter(
     "",
     response_model=ProjectResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_user)],
 )
 def create_project(
     data: ProjectCreate,
@@ -93,6 +95,7 @@ def get_project(
 @router.patch(
     "/{project_id}",
     response_model=ProjectResponse,
+    dependencies=[Depends(get_current_user)],
 )
 def update_project(
     project_id: int,
@@ -128,6 +131,7 @@ def update_project(
 @router.delete(
     "/{project_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_user)],
 )
 def delete_project(
     project_id: int,

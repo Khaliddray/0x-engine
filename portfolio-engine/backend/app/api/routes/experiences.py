@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.schemas.experience import (
     ExperienceCreate,
@@ -24,6 +25,7 @@ router = APIRouter(
     "",
     response_model=ExperienceResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_user)],
 )
 def create_experience(
     data: ExperienceCreate,
@@ -95,6 +97,7 @@ def get_experience(
 @router.patch(
     "/{experience_id}",
     response_model=ExperienceResponse,
+    dependencies=[Depends(get_current_user)],
 )
 def update_experience(
     experience_id: int,
@@ -122,6 +125,7 @@ def update_experience(
 @router.delete(
     "/{experience_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_user)],
 )
 def delete_experience(
     experience_id: int,

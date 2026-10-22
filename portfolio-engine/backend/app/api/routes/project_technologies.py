@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.schemas.project_technology import (
     ProjectTechnologyCreate,
@@ -22,6 +23,7 @@ service = ProjectTechnologyService()
     "",
     response_model=ProjectTechnologyResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_user)],
 )
 def create_project_technology(
     data: ProjectTechnologyCreate,
@@ -79,6 +81,7 @@ def get_project_technology(
 @router.patch(
     "/{technology_id}",
     response_model=ProjectTechnologyResponse,
+    dependencies=[Depends(get_current_user)],
 )
 def update_project_technology(
     technology_id: int,
@@ -105,6 +108,7 @@ def update_project_technology(
 @router.delete(
     "/{technology_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_user)],
 )
 def delete_project_technology(
     technology_id: int,

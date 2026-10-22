@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.schemas.skill import (
     SkillCreate,
@@ -25,6 +26,7 @@ router = APIRouter(
     "",
     response_model=SkillResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_user)],
 )
 def create_skill(
     data: SkillCreate,
@@ -98,6 +100,7 @@ def get_skill(
 @router.patch(
     "/{skill_id}",
     response_model=SkillResponse,
+    dependencies=[Depends(get_current_user)],
 )
 def update_skill(
     skill_id: int,
@@ -128,6 +131,7 @@ def update_skill(
 @router.delete(
     "/{skill_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_user)],
 )
 def delete_skill(
     skill_id: int,

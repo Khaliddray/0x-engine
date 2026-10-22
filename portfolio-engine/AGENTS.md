@@ -259,6 +259,8 @@ The following foundation is already implemented:
 - Delete operations
 - Authentication with Argon2 and JWT tokens
 - User management and authentication routes (/api/auth, /api/users)
+- Portfolio administration overview endpoint (/api/admin/overview)
+- Content mutation route protection with JWT authentication (POST, PATCH, DELETE across all resources)
 
 This foundation should be preserved and extended rather than rebuilt.
 

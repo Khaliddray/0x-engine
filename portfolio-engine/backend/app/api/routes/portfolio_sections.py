@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.schemas.portfolio_section import (
     PortfolioSectionCreate,
@@ -25,6 +26,7 @@ router = APIRouter(
     "",
     response_model=PortfolioSectionResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_user)],
 )
 def create_section(
     data: PortfolioSectionCreate,
@@ -98,6 +100,7 @@ def get_section(
 @router.patch(
     "/{section_id}",
     response_model=PortfolioSectionResponse,
+    dependencies=[Depends(get_current_user)],
 )
 def update_section(
     section_id: int,
@@ -128,6 +131,7 @@ def update_section(
 @router.delete(
     "/{section_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_user)],
 )
 def delete_section(
     section_id: int,

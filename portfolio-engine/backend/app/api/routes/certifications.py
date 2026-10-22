@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.schemas.certification import (
     CertificationCreate,
@@ -24,6 +25,7 @@ router = APIRouter(
     "",
     response_model=CertificationResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_user)],
 )
 def create_certification(
     data: CertificationCreate,
@@ -96,6 +98,7 @@ def get_certification(
 @router.patch(
     "/{certification_id}",
     response_model=CertificationResponse,
+    dependencies=[Depends(get_current_user)],
 )
 def update_certification(
     certification_id: int,
@@ -123,6 +126,7 @@ def update_certification(
 @router.delete(
     "/{certification_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_user)],
 )
 def delete_certification(
     certification_id: int,

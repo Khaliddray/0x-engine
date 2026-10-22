@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.schemas.project_media import (
     ProjectMediaCreate,
@@ -23,6 +24,7 @@ router = APIRouter(
     "",
     response_model=ProjectMediaResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_user)],
 )
 def create_project_media(
     data: ProjectMediaCreate,
@@ -86,6 +88,7 @@ def get_project_media_item(
 @router.patch(
     "/{media_id}",
     response_model=ProjectMediaResponse,
+    dependencies=[Depends(get_current_user)],
 )
 def update_project_media(
     media_id: int,
@@ -115,6 +118,7 @@ def update_project_media(
 @router.delete(
     "/{media_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_user)],
 )
 def delete_project_media(
     media_id: int,

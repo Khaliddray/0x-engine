@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.schemas.education import (
     EducationCreate,
@@ -24,6 +25,7 @@ router = APIRouter(
     "",
     response_model=EducationResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_user)],
 )
 def create_education(
     data: EducationCreate,
@@ -96,6 +98,7 @@ def get_education_record(
 @router.patch(
     "/{education_id}",
     response_model=EducationResponse,
+    dependencies=[Depends(get_current_user)],
 )
 def update_education(
     education_id: int,
@@ -123,6 +126,7 @@ def update_education(
 @router.delete(
     "/{education_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_user)],
 )
 def delete_education(
     education_id: int,

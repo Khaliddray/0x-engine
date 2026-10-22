@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.schemas.social_link import (
     SocialLinkCreate,
@@ -24,6 +25,7 @@ router = APIRouter(
     "",
     response_model=SocialLinkResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_user)],
 )
 def create_social_link(
     data: SocialLinkCreate,
@@ -96,6 +98,7 @@ def get_social_link(
 @router.patch(
     "/{social_link_id}",
     response_model=SocialLinkResponse,
+    dependencies=[Depends(get_current_user)],
 )
 def update_social_link(
     social_link_id: int,
@@ -123,6 +126,7 @@ def update_social_link(
 @router.delete(
     "/{social_link_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_user)],
 )
 def delete_social_link(
     social_link_id: int,

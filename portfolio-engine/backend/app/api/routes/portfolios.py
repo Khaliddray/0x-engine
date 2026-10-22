@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
+from app.api.deps import get_current_user
 from app.db.session import get_db
 from app.schemas.portfolio import (
     PortfolioCreate,
@@ -20,6 +21,7 @@ router = APIRouter(
     "",
     response_model=PortfolioResponse,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(get_current_user)],
 )
 def create_portfolio(
     data: PortfolioCreate,
@@ -70,6 +72,7 @@ def get_portfolio(
 @router.patch(
     "/{portfolio_id}",
     response_model=PortfolioResponse,
+    dependencies=[Depends(get_current_user)],
 )
 def update_portfolio(
     portfolio_id: int,
@@ -98,6 +101,7 @@ def update_portfolio(
 @router.delete(
     "/{portfolio_id}",
     status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(get_current_user)],
 )
 def delete_portfolio(
     portfolio_id: int,

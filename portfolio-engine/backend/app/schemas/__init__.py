@@ -1,3 +1,4 @@
+from app.schemas.admin import AdminOverviewResponse
 from app.schemas.portfolio import (
     PortfolioCreate,
     PortfolioResponse,
@@ -27,6 +28,7 @@ from app.schemas.user import (
 )
 
 __all__ = [
+    "AdminOverviewResponse",
     "PortfolioCreate",
     "PortfolioResponse",
     "PortfolioUpdate",
@@ -45,3 +47,4 @@ __all__ = [
     "Token",
     "LoginRequest",
 ]
+
