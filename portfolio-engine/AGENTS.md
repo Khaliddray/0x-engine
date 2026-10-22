@@ -261,6 +261,7 @@ The following foundation is already implemented:
 - User management and authentication routes (/api/auth, /api/users)
 - Portfolio administration overview endpoint (/api/admin/overview)
 - Content mutation route protection with JWT authentication (POST, PATCH, DELETE across all resources)
+- Automated Pytest test suite covering authentication, admin overview, route protection, public endpoints, and repository CRUD
 
 This foundation should be preserved and extended rather than rebuilt.
 
@@ -276,8 +277,9 @@ Before considering a feature complete:
 - Test important invalid-input cases.
 - Test relevant database behavior.
 - Confirm existing functionality still works.
+- Run the automated test suite (`pytest -c pytest.ini`).
 
-Manual Swagger testing can be used during development, but important functionality should eventually receive automated tests.
+The automated test suite is maintained under `backend/tests/` and includes in-memory database isolation fixtures for reproducible testing.
 
 ---
 
