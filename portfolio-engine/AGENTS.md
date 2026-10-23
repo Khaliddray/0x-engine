@@ -206,62 +206,72 @@ Only fields actually supplied by the client should be modified.
 
 ## Current Domain
 
-The backend currently contains two primary resources:
+The backend contains the following resources and domain models:
 
 ### Portfolio
-
-Portfolio CRUD has been implemented and tested.
+Root portfolio entity holding developer personal and profile metadata.
 
 ### Project
+Projects belonging to portfolios (`project.portfolio_id -> portfolio.id`), supporting an `is_featured` flag.
 
-Project CRUD has been implemented and tested.
+### Portfolio Section
+Custom narrative sections belonging to portfolios (`portfolio_section.portfolio_id -> portfolio.id`).
 
-Projects belong to portfolios through:
+### Skill
+Skills categorized and ordered by position belonging to portfolios (`skill.portfolio_id -> portfolio.id`).
 
-    project.portfolio_id → portfolio.id
+### Experience
+Work history items belonging to portfolios (`experience.portfolio_id -> portfolio.id`).
 
-Current development data includes:
+### Education
+Academic history items belonging to portfolios (`education.portfolio_id -> portfolio.id`).
 
-- Main portfolio ID: 1
-- Current project ID: 2
+### Certification
+Professional credentials and licenses belonging to portfolios (`certification.portfolio_id -> portfolio.id`).
 
-These IDs are development data only and must not be hard-coded as assumptions in application logic.
+### Social Link
+Platform profiles and links belonging to portfolios (`social_link.portfolio_id -> portfolio.id`).
+
+### Resume
+Document references and links belonging to portfolios (`resume.portfolio_id -> portfolio.id`).
+
+### Project Technology
+Technology tags associated with individual projects (`project_technology.project_id -> project.id`).
+
+### Project Media
+Media assets and screenshots associated with individual projects (`project_media.project_id -> project.id`).
+
+### User
+System users with Argon2-hashed passwords, active status, and superuser privileges.
 
 ---
 
 ## Current Backend Functionality
 
-The following foundation is already implemented:
+The following foundation is fully implemented and tested:
 
-- FastAPI application
-- Root endpoint
-- Health endpoint
-- PostgreSQL connection
-- SQLAlchemy session
-- SQLAlchemy models
-- Alembic migrations
-- Portfolio schemas
-- Portfolio repository
-- Portfolio service
-- Portfolio routes
-- Project schemas
-- Project repository
-- Project service
-- Project routes
-- Portfolio CRUD
-- Project CRUD
-- Project-to-portfolio relationship
-- Duplicate slug protection
-- Portfolio existence validation
-- Partial PATCH updates
-- 404 handling
-- 409 conflict handling
-- Delete operations
-- Authentication with Argon2 and JWT tokens
-- User management and authentication routes (/api/auth, /api/users)
-- Portfolio administration overview endpoint (/api/admin/overview)
-- Content mutation route protection with JWT authentication (POST, PATCH, DELETE across all resources)
-- Automated Pytest test suite covering authentication, admin overview, route protection, public endpoints, and repository CRUD
+- FastAPI application with root (`/`) and health (`/health`) endpoints
+- PostgreSQL database engine and session management with SQLAlchemy 2.0
+- Alembic database migration management (13 migrations applied)
+- Portfolio CRUD (`/api/portfolios`)
+- Project CRUD (`/api/projects`) with `is_featured` support
+- Portfolio Sections CRUD (`/api/sections`)
+- Skills CRUD (`/api/skills`)
+- Experiences CRUD (`/api/experiences`)
+- Education CRUD (`/api/education`)
+- Certifications CRUD (`/api/certifications`)
+- Social Links CRUD (`/api/social-links`)
+- Resumes CRUD (`/api/resumes`)
+- Project Technologies CRUD (`/api/project-technologies`)
+- Project Media CRUD (`/api/project-media`)
+- Public portfolio aggregated reader endpoint (`/api/public/portfolios/{slug}`)
+- Argon2 password hashing and JWT access token authentication (`/api/auth/login`, `/api/auth/register`, `/api/auth/me`)
+- Superuser-protected user management (`/api/users`)
+- Portfolio administration overview endpoint (`/api/admin/overview`)
+- Content mutation route protection via JWT authentication across all `POST`, `PATCH`, and `DELETE` endpoints
+- Partial PATCH updates across all entities
+- Duplicate slug conflict prevention and foreign key validation
+- Automated Pytest test suite under `backend/tests/` with SQLite in-memory isolation
 
 This foundation should be preserved and extended rather than rebuilt.
 
@@ -362,28 +372,36 @@ Do not introduce a new dependency unless it provides clear value.
 
 ## Architecture Growth
 
-The system is intended to grow beyond basic CRUD.
+The backend has progressed through its planned foundation and domain milestones.
 
-Future areas may include:
+### Completed Milestones
+- [x] Portfolio Sections CRUD
+- [x] Skills CRUD
+- [x] Experience CRUD
+- [x] Education CRUD
+- [x] Certifications CRUD
+- [x] Social Links CRUD
+- [x] Resume/CV CRUD
+- [x] Project Technologies CRUD
+- [x] Featured Projects support
+- [x] Project Media CRUD
+- [x] Public Portfolio aggregation endpoint (`/api/public/portfolios/{slug}`)
+- [x] User Authentication (Argon2 + JWT tokens)
+- [x] Mutation route protection across all endpoints
+- [x] Portfolio administration overview endpoint (`/api/admin/overview`)
+- [x] Automated Pytest test suite with isolated SQLite in-memory fixtures
 
-- Portfolio sections
-- Skills
-- Experience
-- Education
-- Certifications
-- Social links
-- Resume/CV
-- Media
-- Project technologies
-- Featured projects
-- Public portfolio pages
-- Authentication
-- Portfolio administration
-- Frontend content management
-- Deployment
+### Upcoming Architecture & Implementation Priorities
+1. **Containerization & Deployment**
+   - Docker configuration for the FastAPI backend application
+   - Multi-container orchestration via `docker-compose.yml` (PostgreSQL service + Backend API service)
+   - Production environment variables and database initialization
+
+2. **Frontend Presentation & Content Management**
+   - React-based frontend consuming the public portfolio endpoint (`/api/public/portfolios/{slug}`)
+   - Administrative dashboard for managing portfolio sections and projects
 
 New features should fit naturally into the existing architecture.
-
 Do not build all future features prematurely.
 
 ---
