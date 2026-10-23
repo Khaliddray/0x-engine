@@ -1,4 +1,7 @@
-from fastapi import FastAPI
+from pathlib import Path
+from fastapi import FastAPI, Request
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from app.api.routes.health import router as health_router
 from app.api.routes.portfolios import router as portfolio_router
@@ -42,11 +45,30 @@ app.include_router(project_technology_router)
 app.include_router(project_media_router)
 app.include_router(public_portfolio_router)
 
+FRONTEND_DIR = Path(__file__).resolve().parent.parent.parent / "frontend"
+FRONTEND_INDEX = FRONTEND_DIR / "index.html"
+
+if FRONTEND_DIR.is_dir():
+    app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
+
 
 @app.get("/")
-def root():
+def root(request: Request):
+    accept_header = request.headers.get("accept", "")
+    if "text/html" in accept_header and FRONTEND_INDEX.is_file():
+        return FileResponse(FRONTEND_INDEX)
+
     return {
         "name": "Portfolio Engine API",
         "version": "0.1.0",
         "status": "running",
     }
+
+
+@app.get("/portfolio/{slug}")
+@app.get("/portfolio")
+def view_portfolio(slug: str | None = None):
+    if FRONTEND_INDEX.is_file():
+        return FileResponse(FRONTEND_INDEX)
+    return {"message": "Frontend not found"}
+

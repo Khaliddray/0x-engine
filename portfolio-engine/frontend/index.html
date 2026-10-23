@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yahaya Khalid — Software Engineer & Architecture Portfolio</title>
+  <meta name="description" content="Personal portfolio and software engineering showcase for Yahaya Khalid, powered by Portfolio Engine API." />
+  
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#1e1b4b',
+            },
+            dark: {
+              bg: '#090d16',
+              surface: '#0f172a',
+              card: '#131e36',
+              border: '#1e293b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- React 18 & Babel Standalone -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <style>
+    body {
+      background-color: #090d16;
+      color: #f1f5f9;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+    .glow-effect {
+      background: radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, rgba(9, 13, 22, 0) 70%);
+    }
+    .glass-card {
+      background: rgba(19, 30, 54, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card:hover {
+      border-color: rgba(99, 102, 241, 0.3);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-dark-bg text-slate-100 selection:bg-brand-500 selection:text-white">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // --- Icons ---
+    const CodeIcon = () => (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+      </svg>
+    );
+
+    const ExternalLinkIcon = () => (
+      <svg className="w-4 h-4 inline-block ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+      </svg>
+    );
+
+    const GitHubIcon = () => (
+      <svg className="w-4 h-4 inline-block mr-1.5" fill="currentColor" viewBox="0 0 24 24">
+        <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+      </svg>
+    );
+
+    const DownloadIcon = () => (
+      <svg className="w-4 h-4 inline-block mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+      </svg>
+    );
+
+    // --- Main Application Component ---
+    function App() {
+      const [portfolio, setPortfolio] = useState(null);
+      const [slug, setSlug] = useState("khalid");
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState(null);
+      const [filterFeatured, setFilterFeatured] = useState(false);
+
+      useEffect(() => {
+        fetchPortfolio(slug);
+      }, [slug]);
+
+      const fetchPortfolio = async (targetSlug) => {
+        setLoading(true);
+        setError(null);
+        try {
+          const res = await fetch(`/api/public/portfolios/${targetSlug}`);
+          if (!res.ok) {
+            if (res.status === 404) {
+              throw new Error(`Portfolio with slug "${targetSlug}" was not found.`);
+            }
+            throw new Error(`Failed to load portfolio (HTTP ${res.status})`);
+          }
+          const data = await res.json();
+          setPortfolio(data);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      return (
+        <div className="relative min-h-screen glow-effect flex flex-col justify-between">
+          {/* Header */}
+          <header className="sticky top-0 z-50 backdrop-blur-md bg-dark-bg/80 border-b border-white/5">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+              <a href="#hero" className="flex items-center space-x-3 group">
+                <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center font-bold text-white shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform">
+                  YK
+                </div>
+                <div className="text-left">
+                  <div className="font-semibold text-sm leading-tight text-white">Yahaya Khalid</div>
+                  <div className="text-xs text-slate-400 font-mono">Portfolio Engine</div>
+                </div>
+              </a>
+
+              <nav className="hidden md:flex items-center space-x-7 text-sm font-medium text-slate-300">
+                <a href="#about" className="hover:text-brand-400 transition-colors">About</a>
+                <a href="#projects" className="hover:text-brand-400 transition-colors">Projects</a>
+                <a href="#skills" className="hover:text-brand-400 transition-colors">Skills</a>
+                <a href="#experience" className="hover:text-brand-400 transition-colors">Experience</a>
+                <a href="#education" className="hover:text-brand-400 transition-colors">Credentials</a>
+              </nav>
+
+              <div className="flex items-center space-x-3">
+                <a 
+                  href="/docs" 
+                  target="_blank" 
+                  className="px-3 py-1.5 rounded-md text-xs font-mono font-medium text-brand-400 bg-brand-500/10 border border-brand-500/20 hover:bg-brand-500/20 transition-all flex items-center"
+                >
+                  <CodeIcon />
+                  <span className="ml-1.5">Interactive Docs</span>
+                </a>
+              </div>
+            </div>
+          </header>
+
+          {/* Main Content Area */}
+          <main className="max-w-6xl mx-auto px-4 sm:px-6 py-12 w-full flex-grow">
+            {loading && (
+              <div className="py-24 text-center">
+                <div className="inline-block w-10 h-10 border-4 border-brand-500/20 border-t-brand-500 rounded-full animate-spin"></div>
+                <p className="mt-4 text-slate-400 font-mono text-sm">Fetching portfolio hierarchy from API...</p>
+              </div>
+            )}
+
+            {error && (
+              <div className="glass-card rounded-2xl p-8 max-w-2xl mx-auto my-12 text-center border-rose-500/30">
+                <div className="w-12 h-12 bg-rose-500/10 text-rose-400 rounded-xl flex items-center justify-center mx-auto mb-4">
+                  ⚠️
+                </div>
+                <h2 className="text-xl font-bold text-white mb-2">Portfolio Data Not Found</h2>
+                <p className="text-slate-400 text-sm mb-6">{error}</p>
+                <div className="p-4 bg-dark-bg/90 rounded-lg text-left text-xs font-mono text-slate-300 mb-6 border border-white/5">
+                  <p className="text-slate-500 mb-2"># Quick Setup: Seed the database with demo data</p>
+                  <p className="text-brand-400 select-all font-semibold">python backend/scripts/seed_data.py</p>
+                </div>
+                <div className="flex items-center justify-center space-x-4">
+                  <button 
+                    onClick={() => fetchPortfolio("khalid")} 
+                    className="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white rounded-lg text-sm font-medium transition"
+                  >
+                    Retry Connection
+                  </button>
+                  <a 
+                    href="/docs" 
+                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-sm font-medium transition"
+                  >
+                    Open API Docs (/docs)
+                  </a>
+                </div>
+              </div>
+            )}
+
+            {!loading && !error && portfolio && (
+              <div>
+                {/* Hero Section */}
+                <section id="hero" className="py-12 sm:py-20 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-10">
+                  <div className="max-w-2xl">
+                    <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-6">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                      <span>FastAPI Backend Active</span>
+                    </div>
+
+                    <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-4">
+                      {portfolio.name}
+                    </h1>
+
+                    <p className="text-lg sm:text-xl text-slate-300 font-normal leading-relaxed mb-8">
+                      {portfolio.description}
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-4 justify-center sm:justify-start">
+                      <a 
+                        href="#projects" 
+                        className="px-5 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-medium text-sm transition-all shadow-lg shadow-brand-600/25 flex items-center"
+                      >
+                        Explore Featured Work
+                      </a>
+
+                      {portfolio.resume && (
+                        <a 
+                          href={portfolio.resume.file_url} 
+                          target="_blank" 
+                          rel="noreferrer"
+                          className="px-5 py-2.5 rounded-lg glass-card hover:bg-dark-card text-slate-200 font-medium text-sm transition-all flex items-center"
+                        >
+                          <DownloadIcon />
+                          <span>Download Resume</span>
+                        </a>
+                      )}
+                    </div>
+
+                    {/* Social Links */}
+                    {portfolio.social_links && portfolio.social_links.length > 0 && (
+                      <div className="mt-8 flex flex-wrap items-center gap-3 justify-center sm:justify-start">
+                        {portfolio.social_links.map((link) => (
+                          <a 
+                            key={link.platform} 
+                            href={link.url} 
+                            target="_blank" 
+                            rel="noreferrer"
+                            className="px-3.5 py-1.5 rounded-lg bg-slate-900/60 hover:bg-slate-800 border border-white/5 text-xs text-slate-300 font-mono transition flex items-center"
+                          >
+                            <span>{link.platform}</span>
+                            <ExternalLinkIcon />
+                          </a>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="relative">
+                    <div className="w-48 h-48 sm:w-56 sm:h-56 rounded-2xl bg-gradient-to-tr from-brand-600/30 via-indigo-500/20 to-transparent p-1 border border-white/10 shadow-2xl flex items-center justify-center text-6xl font-extrabold text-brand-400 select-none">
+                      YK
+                    </div>
+                  </div>
+                </section>
+
+                {/* Narrative Sections (About & Philosophy) */}
+                {portfolio.sections && portfolio.sections.length > 0 && (
+                  <section id="about" className="py-12 border-t border-white/5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {portfolio.sections.map((sec) => (
+                        <div key={sec.slug} className="glass-card rounded-2xl p-6 sm:p-8">
+                          <h2 className="text-xl font-bold text-white mb-3 flex items-center">
+                            <span className="w-2.5 h-2.5 rounded-sm bg-brand-500 mr-2.5"></span>
+                            {sec.title}
+                          </h2>
+                          <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-line">
+                            {sec.content}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {/* Projects Section */}
+                <section id="projects" className="py-14 border-t border-white/5">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                    <div>
+                      <h2 className="text-2xl sm:text-3xl font-extrabold text-white">Engineered Systems & Projects</h2>
+                      <p className="text-slate-400 text-sm mt-1">High-throughput backends, APIs, and microservices.</p>
+                    </div>
+
+                    <div className="inline-flex rounded-lg bg-dark-card p-1 border border-white/5 self-start sm:self-auto">
+                      <button 
+                        onClick={() => setFilterFeatured(false)}
+                        className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${!filterFeatured ? 'bg-brand-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+                      >
+                        All Projects ({portfolio.projects.length})
+                      </button>
+                      <button 
+                        onClick={() => setFilterFeatured(true)}
+                        className={`px-3 py-1.5 rounded-md text-xs font-medium transition ${filterFeatured ? 'bg-brand-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}
+                      >
+                        Featured Only ({portfolio.projects.filter(p => p.is_featured).length})
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {portfolio.projects
+                      .filter(p => !filterFeatured || p.is_featured)
+                      .map((project) => (
+                        <div key={project.slug} className="glass-card rounded-2xl overflow-hidden flex flex-col justify-between transition group hover:-translate-y-1">
+                          {project.media && project.media.length > 0 && (
+                            <div className="h-44 w-full overflow-hidden bg-slate-900 border-b border-white/5 relative">
+                              <img 
+                                src={project.media[0].url} 
+                                alt={project.media[0].alt_text || project.title} 
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80"
+                              />
+                              {project.is_featured && (
+                                <span className="absolute top-3 right-3 px-2.5 py-1 rounded bg-brand-600/90 backdrop-blur-sm text-[11px] font-semibold text-white uppercase tracking-wider">
+                                  Featured
+                                </span>
+                              )}
+                            </div>
+                          )}
+
+                          <div className="p-6 flex-grow flex flex-col justify-between">
+                            <div>
+                              <div className="flex items-center justify-between mb-2">
+                                <h3 className="text-lg font-bold text-white group-hover:text-brand-400 transition-colors">
+                                  {project.title}
+                                </h3>
+                              </div>
+                              <p className="text-slate-300 text-sm leading-relaxed mb-5">
+                                {project.description}
+                              </p>
+                            </div>
+
+                            <div>
+                              {/* Technology Pills */}
+                              {project.technologies && project.technologies.length > 0 && (
+                                <div className="flex flex-wrap gap-1.5 mb-5">
+                                  {project.technologies.map((t) => (
+                                    <span key={t.slug} className="px-2.5 py-1 rounded-md text-[11px] font-mono bg-dark-bg/80 text-brand-300 border border-brand-500/20">
+                                      {t.name}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+
+                              {/* Action Links */}
+                              <div className="flex items-center space-x-3 pt-4 border-t border-white/5">
+                                {project.github_url && (
+                                  <a 
+                                    href={project.github_url} 
+                                    target="_blank" 
+                                    rel="noreferrer" 
+                                    className="text-xs font-mono text-slate-300 hover:text-white flex items-center transition"
+                                  >
+                                    <GitHubIcon />
+                                    <span>Source Code</span>
+                                  </a>
+                                )}
+                                {project.live_url && (
+                                  <a 
+                                    href={project.live_url} 
+                                    target="_blank" 
+                                    rel="noreferrer" 
+                                    className="text-xs font-mono text-brand-400 hover:text-brand-300 flex items-center transition"
+                                  >
+                                    <span>Live Preview</span>
+                                    <ExternalLinkIcon />
+                                  </a>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </section>
+
+                {/* Skills Grid */}
+                {portfolio.skills && portfolio.skills.length > 0 && (
+                  <section id="skills" className="py-14 border-t border-white/5">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">Technical Proficiency</h2>
+                    <p className="text-slate-400 text-sm mb-8">Languages, frameworks, databases, and architectural standards.</p>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                      {portfolio.skills.map((skill) => (
+                        <div key={skill.slug} className="glass-card rounded-xl p-4 flex flex-col justify-between">
+                          <div>
+                            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
+                              {skill.category || 'Skill'}
+                            </span>
+                            <div className="text-base font-semibold text-white mt-0.5">
+                              {skill.name}
+                            </div>
+                          </div>
+                          {skill.proficiency && (
+                            <div className="mt-3 inline-flex items-center">
+                              <span className="px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-brand-500/15 text-brand-300 border border-brand-500/20">
+                                {skill.proficiency}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {/* Work Experience */}
+                {portfolio.experience && portfolio.experience.length > 0 && (
+                  <section id="experience" className="py-14 border-t border-white/5">
+                    <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-2">Career & Experience</h2>
+                    <p className="text-slate-400 text-sm mb-8">Professional software engineering roles and track record.</p>
+
+                    <div className="space-y-6">
+                      {portfolio.experience.map((exp) => (
+                        <div key={exp.company + exp.role} className="glass-card rounded-2xl p-6 sm:p-8">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                            <div>
+                              <h3 className="text-lg font-bold text-white">{exp.role}</h3>
+                              <div className="text-sm font-medium text-brand-400">{exp.company} • <span className="text-slate-400">{exp.location}</span></div>
+                            </div>
+                            <div className="px-3 py-1 rounded-full text-xs font-mono bg-white/5 text-slate-300 self-start sm:self-auto border border-white/5">
+                              {exp.start_date} → {exp.end_date || 'Present'}
+                            </div>
+                          </div>
+                          <p className="text-slate-300 text-sm leading-relaxed whitespace-pre-line mt-4">
+                            {exp.description}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {/* Education & Certifications */}
+                <section id="education" className="py-14 border-t border-white/5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Education */}
+                    <div>
+                      <h2 className="text-xl font-bold text-white mb-4">Academic Background</h2>
+                      {portfolio.education && portfolio.education.map((edu) => (
+                        <div key={edu.institution} className="glass-card rounded-2xl p-6">
+                          <div className="flex justify-between items-start gap-2">
+                            <div>
+                              <div className="font-bold text-white text-base">{edu.degree} in {edu.field_of_study}</div>
+                              <div className="text-sm text-brand-400 mt-0.5">{edu.institution}</div>
+                              <div className="text-xs text-slate-400 mt-0.5">{edu.location}</div>
+                            </div>
+                            <span className="text-xs font-mono text-slate-400 bg-white/5 px-2.5 py-1 rounded">
+                              {edu.start_date.slice(0, 4)} – {edu.end_date ? edu.end_date.slice(0, 4) : 'Present'}
+                            </span>
+                          </div>
+                          {edu.description && (
+                            <p className="text-slate-300 text-xs leading-relaxed mt-4">
+                              {edu.description}
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Certifications */}
+                    <div>
+                      <h2 className="text-xl font-bold text-white mb-4">Certifications & Licenses</h2>
+                      {portfolio.certifications && portfolio.certifications.map((cert) => (
+                        <div key={cert.name} className="glass-card rounded-2xl p-6 mb-4">
+                          <div className="font-bold text-white text-base">{cert.name}</div>
+                          <div className="text-sm text-brand-400 mt-0.5">{cert.issuer}</div>
+                          <div className="text-xs text-slate-400 font-mono mt-1">
+                            Issued: {cert.issue_date} {cert.credential_id && `• ID: ${cert.credential_id}`}
+                          </div>
+                          {cert.credential_url && (
+                            <a 
+                              href={cert.credential_url} 
+                              target="_blank" 
+                              rel="noreferrer"
+                              className="inline-flex items-center text-xs font-mono text-brand-300 hover:text-white mt-3"
+                            >
+                              <span>Verify Credential</span>
+                              <ExternalLinkIcon />
+                            </a>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+              </div>
+            )}
+          </main>
+
+          {/* Footer */}
+          <footer className="border-t border-white/5 py-8 bg-dark-bg/90">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
+              <div>
+                © {new Date().getFullYear()} Yahaya Khalid • Engineered with FastAPI & React
+              </div>
+              <div className="flex items-center space-x-6 font-mono">
+                <a href="/api/public/portfolios/khalid" target="_blank" className="hover:text-brand-400 transition">JSON API Payload</a>
+                <a href="/docs" target="_blank" className="hover:text-brand-400 transition">Swagger UI</a>
+                <a href="/health" target="_blank" className="hover:text-brand-400 transition">System Health</a>
+              </div>
+            </div>
+          </footer>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

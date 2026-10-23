@@ -77,3 +77,18 @@ def test_public_portfolio_success_unauthenticated(client, auth_headers):
     assert data["projects"][0]["technologies"][0]["name"] == "Python"
     assert len(data["skills"]) == 1
     assert data["skills"][0]["name"] == "FastAPI"
+
+
+def test_frontend_html_rendering_on_root(client):
+    response = client.get("/", headers={"Accept": "text/html"})
+    assert response.status_code == 200
+    assert "text/html" in response.headers.get("content-type", "")
+    assert "<!DOCTYPE html>" in response.text
+    assert "Yahaya Khalid" in response.text
+
+
+def test_frontend_html_rendering_on_portfolio_slug(client):
+    response = client.get("/portfolio/khalid")
+    assert response.status_code == 200
+    assert "<!DOCTYPE html>" in response.text
+
